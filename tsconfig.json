@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "experimentalDecorators": true,
+        "target": "es6",
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "noEmit": true,
+        "skipLibCheck": true,
+        "allowSyntheticDefaultImports": true,
+        "isolatedModules": true,
+        "outDir": "./dist",
+        "lib": [
+            "es2015",
+            "dom"
+        ],
+        "types": [],
+        "jsx": "react"
+    },
+    "files": [
+        "./types.d.ts",
+        "./src/client/client.tsx",
+    ],
+    "include": [
+        "./src/client/**/*",
+        "./src/shared/**/*"
+    ],
+    "exclude": [
+        "src/**/test/**/*"
+    ]
+}

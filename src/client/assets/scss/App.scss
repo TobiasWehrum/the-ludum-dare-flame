@@ -1,0 +1,144 @@
+@import url("https://fonts.googleapis.com/css?family=Lato:400,900|Ubuntu:700&display=swap");
+
+$bg-color: yellow;
+$positive-color: green;
+$error-color: red;
+$header-font-family: "Ubuntu", serif;
+$text-font-family: "Lato", sans-serif;
+
+body {
+    font-size: 14px;
+    font-family: $text-font-family;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: $header-font-family;
+}
+
+button:disabled {
+    border: 0.25px dashed #aaa;
+    background-color: #f0f0f0;
+}
+
+.app {
+    padding: 2em;
+
+    .player-name {
+        font-weight: bold;
+    }
+
+    .ingame-button-row {
+        display: flex;
+    }
+
+    .ingame-button {
+        width: 75px;
+        height: 75px;
+    }
+
+    .ingame-button.progressing {
+        border: 5px solid black;
+    }
+
+    .progress-display {
+        display: inline-block;
+        border: 1px solid #aaa;
+    }
+
+    .progress-progress-display {
+        width: 100px;
+        text-align: center;
+    }
+
+    .ingame-notification {
+        pointer-events: none;
+        position: absolute;
+        /*transform: translate(-50%, -100%);*/
+        transform: translateY(-100%);
+        animation: fade-out-move-up 1s linear 0.1s 1 normal forwards;
+    }
+
+    @keyframes fade-out-move-up {
+        0% {
+            opacity: 1;
+            transform: translateY(-100%);
+        }
+        100% {
+            opacity: 0;
+            transform: translateY(calc(-100% - 1rem));
+        }
+    }
+
+    .ingame-notification-success-positive {
+        color: $positive-color;
+    }
+
+    .ingame-notification-success-negative {
+        color: orangered;
+    }
+
+    .ingame-notification-failure {
+        color: $error-color;
+        border: $error-color 1px dashed;
+    }
+
+    .error {
+        color: $error-color;
+    }
+}
+
+.tooltip-container {
+    position: relative;
+}
+
+.tooltip-container .tooltip-text {
+    visibility: hidden;
+
+    display: block;
+    width: 120px;
+    background-color: white;
+    color: black;
+    padding: 5px 0;
+    border: 1px solid black;
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltip-container .tooltip-text-failure {
+    border-color: $error-color;
+}
+
+.tooltip-container:hover .tooltip-text {
+    /*visibility: visible;*/
+    animation: make-tooltip-visible 0.1s linear 0.3s 1 normal forwards;
+}
+
+@keyframes make-tooltip-visible {
+    99% {
+        visibility: hidden;
+    }
+    100% {
+        visibility: visible;
+    }
+}
+
+.highlight {
+    position: absolute;
+    border-style: solid;
+    border-width: 5px;
+    pointer-events: none;
+    box-sizing: border-box;
+    animation: highlight-fade-out 0.3s linear 0s 1 normal forwards;
+}
+
+@keyframes highlight-fade-out {
+    100% {
+        opacity: 0;
+        /*border-width: 0px;*/
+    }
+}

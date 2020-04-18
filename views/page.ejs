@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>The Ludum Dare Flame</title>
+
+<body>
+    <div id="root"></div>
+
+    <% if(process.env.NODE_ENV === 'production') { %>
+    <script src="https://unpkg.com/react@16.8.6/umd/react.production.min.js" integrity="sha384-qn+ML/QkkJxqn4LLs1zjaKxlTg2Bl/6yU/xBTJAgxkmNGc6kMZyeskAG0a7eJBR1" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.production.min.js" integrity="sha384-85IMG5rvmoDsmMeWK/qUU4kwnYXVpC+o9hoHMLi4bpNR+gMEiPLrvkZCgsr7WWgV" crossorigin="anonymous"></script>
+    <% } else { %>
+    <script src="https://unpkg.com/react@16.8.6/umd/react.development.js" integrity="sha384-u6DTDagyAFm2JKvgGBO8jWd9YzrDzg6FuBPKWkKIg0/GVA6HM9UkSxH2rzxEJ5GF" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/react-dom@16.8.6/umd/react-dom.development.js" integrity="sha384-G/zTlGEEkXuMHnwn+hHOFgqXlmVzCrNtkHQ3dsC7fGuev0FrrS44zmi3VXEwfw/S" crossorigin="anonymous"></script>
+    <% } %>
+    <script type="text/javascript" src="<%- manifest['vendors.js'] %>"></script>
+    <script type="text/javascript" src="<%- manifest['main.js'] %>"></script>
+</body>
+
+</html>

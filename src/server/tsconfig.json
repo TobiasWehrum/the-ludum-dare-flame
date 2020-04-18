@@ -1,0 +1,29 @@
+{
+    "compilerOptions": {
+        "experimentalDecorators": true,
+        "target": "es6",
+        "sourceMap": true,
+        "module": "commonjs",
+        "importHelpers": true,
+        "allowJs": true,
+        "outDir": "../../dist/server-root",
+        "rootDir": "..",
+        "lib": [
+            "es6"
+        ],
+        "moduleResolution": "node",
+        "types": [
+            "node"
+        ]
+    },
+    "files": [
+        "./server.ts"
+    ],
+    "include": [
+        "./**/*",
+        "../shared/**/*"
+    ],
+    "exclude": [
+        "../shared/utils/test/**/*"
+    ]
+}
