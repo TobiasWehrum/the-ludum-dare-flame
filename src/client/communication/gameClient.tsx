@@ -4,6 +4,7 @@ import { IData } from "../../shared/definitions/databaseInterfaces";
 import { ClientEvent, ServerEvent, IInitialDataPackage } from "../../shared/definitions/socketIODefinitions";
 import IngameButton from "../components/Ingame/IngameButton";
 import { bind } from "bind-decorator";
+import { GameStateStore } from "../stores/gameStateStore";
 
 const EVENT_CONNECT = "connect";
 const EVENT_DISCONNECT = "disconnect";
@@ -18,8 +19,13 @@ class GameClient {
     private socket: SocketIOClient.Socket;
 
     public connect() {
+        if (!stores.gameStateStore.playerName) {
+            stores.gameStateStore.generatePlayerName();
+        }
+
         this.socket = io({
             query: {
+                playerName: stores.gameStateStore.playerName
             }
         });
 
@@ -87,6 +93,13 @@ class GameClient {
         stores.gameStateStore.requestStarted();
         stores.gameStateStore.startCooldown(id);
         this.socket.emit(ClientEvent.doAction, id, stores.gameStateStore.requestFinished);
+    }
+
+    @bind
+    public changeName(playerName: string) {
+        this.socket.emit(ClientEvent.changeName, playerName);
+        stores.gameStateStore.playerName = playerName;
+        (this.socket.io.opts.query as any).playerName = playerName;
     }
 
     public disconnect() {

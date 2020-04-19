@@ -24,20 +24,22 @@ export class GameServer {
 
     @bind
     private async onConnection(socket: socketio.Socket) {
-        console.log("Client connected: " + socket.id);
+        let playerName = socket.handshake.query.playerName;
 
-        const playerId = socket.handshake.query.playerId;
-
-        socket.join(playerId);
+        console.log("Client connected: " + socket.id + " (" + playerName + ")");
 
         const initialDataPackage: IInitialDataPackage = {
             data
         };
-        socket.emit(ServerEvent.initialDataPackage, initialDataPackage);
 
+        socket.emit(ServerEvent.initialDataPackage, initialDataPackage);
         // tslint:disable-next-line: no-empty
         socket.on(EVENT_DISCONNECT, () => {
+            console.log("Client disconnected: " + socket.id + " (" + playerName + ")");
+        });
 
+        socket.on(ClientEvent.changeName, (newName: string) => {
+            playerName = newName;
         });
 
         let requestRunning = false;

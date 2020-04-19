@@ -5,7 +5,8 @@ export interface IInitialDataPackage {
 }
 
 export const ClientEvent = {
-    doAction: "doAction"
+    doAction: "doAction",
+    changeName: "changeName"
 };
 
 export const ServerEvent = {

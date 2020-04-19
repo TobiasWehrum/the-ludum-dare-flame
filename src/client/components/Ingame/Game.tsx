@@ -6,13 +6,17 @@ import IngameButton from "./IngameButton";
 import ActionButton from "./ActionButton";
 import { actions } from "../../../shared/definitions/mixed";
 import Fire from "./Fire";
+import Records from "./Records";
+import NameChanger from "./NameChanger";
 
 interface IProps {
     gameStateStore?: GameStateStore;
 }
 
 // tslint:disable-next-line: no-empty-interface
-interface IState { }
+interface IState {
+    changeName: boolean;
+}
 
 @inject("gameStateStore")
 @observer
@@ -21,6 +25,7 @@ export default class Game extends React.Component<IProps, IState> {
         super(props);
 
         this.state = {
+            changeName: false
         };
     }
 
@@ -53,11 +58,22 @@ export default class Game extends React.Component<IProps, IState> {
             return <div>Loading...</div>;
         }
 
-        //const { data } = gameStateStore;
+        const { changeName } = this.state;
+        const { playerName } = gameStateStore;
 
         return (
             <div>
                 <Fire />
+                <div>
+                    Name:&nbsp;
+                    {!changeName && <span>{playerName}<button onClick={() => this.setState({ changeName: true })}>Change</button></span>}
+                    {changeName && <NameChanger currentName={playerName}
+                        changeName={(newName: string) => {
+                            gameClient.changeName(newName);
+                            this.setState({ changeName: false });
+                        }} />}
+                </div>
+                <Records />
             </div>
         );
     }

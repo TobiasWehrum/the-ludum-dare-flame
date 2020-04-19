@@ -3,6 +3,7 @@ import { IInitialDataPackage } from "../../shared/definitions/socketIODefinition
 import { IData } from "../../shared/definitions/databaseInterfaces";
 import { times } from "../../shared/definitions/mixed";
 import { timeStore } from "./timeStore";
+import * as generate from "project-name-generator";
 
 export enum ConnectionStatus {
     Connecting,
@@ -20,6 +21,7 @@ export class GameStateStore {
 
     @observable public loaded = false;
     @observable public data = new Data();
+    @observable public playerName = "";
 
     @computed
     public get requestsAreRunning(): boolean {
@@ -110,6 +112,11 @@ export class GameStateStore {
         this.cooldownId = id;
         this.cooldownStart = timeStore.time;
         this.cooldownTimeMS = times[id] * 1000;
+    }
+
+    @action.bound
+    public generatePlayerName() {
+        this.playerName = generate().raw.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
     }
 }
 

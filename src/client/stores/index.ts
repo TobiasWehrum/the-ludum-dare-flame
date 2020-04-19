@@ -7,4 +7,4 @@ export const stores = {
     timeStore
 };
 
-configure({ enforceActions: "always" });
+//configure({ enforceActions: "always" });

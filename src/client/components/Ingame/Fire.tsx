@@ -1,7 +1,6 @@
 import * as React from "react";
-import { GameStateStore, ConnectionStatus } from "../../stores/gameStateStore";
+import { GameStateStore } from "../../stores/gameStateStore";
 import { inject, observer } from "mobx-react";
-import gameClient from "../../communication/gameClient";
 import ActionButton from "./ActionButton";
 import { actions, times, config } from "../../../shared/definitions/mixed";
 import { TimeDisplay } from "./TimeDisplay";
@@ -17,10 +16,7 @@ interface IState { }
 @observer
 export default class Fire extends React.Component<IProps, IState> {
     public render() {
-        const {
-            fireSize, fireStart, lastTick, trees, woodInForest, woodNearFire,
-            recordFireTimeMS, recordFireSize, recordTrees
-        } = this.props.gameStateStore.data;
+        const { fireSize, fireStart, lastTick, trees, woodInForest, woodNearFire } = this.props.gameStateStore.data;
         const burningTimeMS = lastTick - fireStart;
 
         const { FireStokeWoodCount, ChopTreeWoodResult, TransportWoodCount } = config;
@@ -47,12 +43,6 @@ export default class Fire extends React.Component<IProps, IState> {
                     <ActionButton id={actions.ChopTree} disabled={trees === 0} tooltipText={`-1 tree, +${ChopTreeWoodResult} wood in forest, ${times[actions.ChopTree]}s`}>Chop down a tree</ActionButton>
                     <ActionButton id={actions.PlantTree} tooltipText={`+1 tree, ${times[actions.PlantTree]}s`}>Plant a tree and watch it grow</ActionButton>
                 </div>
-                <h1>Records</h1>
-                <ul>
-                    <li>Longest fire burning: <TimeDisplay ms={Math.max(fireSize && burningTimeMS, recordFireTimeMS)} /></li>
-                    <li>Highest fire: {Math.ceil(recordFireSize)}</li>
-                    <li>Most trees in forest: {recordTrees}</li>
-                </ul>
             </div>
         );
     }

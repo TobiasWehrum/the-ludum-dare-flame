@@ -25,8 +25,18 @@ button:disabled {
     background-color: #f0f0f0;
 }
 
+div {
+    margin-top: 20px;
+}
+
+div#root {
+    margin: 0;
+    padding: 0;
+}
+
 .app {
-    padding: 2em;
+    padding: 0;
+    margin: 2em;
 
     .player-name {
         font-weight: bold;
