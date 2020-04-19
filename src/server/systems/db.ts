@@ -27,6 +27,7 @@ export async function connectToDatabase() {
         } else {
             console.log("Created new data!");
             data = generateDefaultData();
+            dbData.insertOne(data);
             await saveData();
         }
 
@@ -48,5 +49,7 @@ function saveData() {
 }
 
 function migrateData() {
+    const originalId = (data as any)._id;
     data = deepmerge(generateDefaultData(), data, { arrayMerge: arrayCombineMerge });
+    (data as any)._id = originalId;
 }
