@@ -19,12 +19,12 @@ export interface ILogLine {
 }
 
 export function generateDefaultData(): IData {
-    const startTrees = 100;
+    const startTrees = 10;
     const data: IData = {
         fireSize: 0,
         woodInFire: 10,
         woodNearFire: 10,
-        woodInForest: 100,
+        woodInForest: 50,
         trees: startTrees,
         lastTick: Date.now(),
         fireStart: 0,

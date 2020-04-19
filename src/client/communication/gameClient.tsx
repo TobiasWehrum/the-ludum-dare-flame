@@ -109,6 +109,10 @@ class GameClient {
 
     @bind
     public changeName(playerName: string) {
+        playerName = playerName.trim();
+        if (stores.gameStateStore.playerName === playerName)
+            return;
+
         this.socket.emit(ClientEvent.changeName, playerName);
         stores.gameStateStore.playerName = playerName;
         (this.socket.io.opts.query as any).playerName = playerName;

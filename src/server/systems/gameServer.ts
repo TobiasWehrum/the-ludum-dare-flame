@@ -48,14 +48,14 @@ export class GameServer {
             this.emitDataToAll();
         }
 
-        this.logAction(playerName, ` wanders out of the darkness and sits near the fire.`);
+        this.logBoth(playerName, ` wanders out of the darkness and sits near the fire.`);
 
         // tslint:disable-next-line: no-empty
         socket.on(EVENT_DISCONNECT, () => {
             console.log("Client disconnected: " + socket.id + " (" + playerName + ")");
             this.playerCount--;
             this.io.emit(ServerEvent.updatePlayerCount, this.playerCount);
-            this.logAction(playerName, ` gets up and wanders into the darkness again.`);
+            this.logBoth(playerName, ` gets up and wanders into the darkness again.`);
         });
 
         socket.on(ClientEvent.changeName, (newName: string) => {
@@ -64,7 +64,7 @@ export class GameServer {
         });
 
         socket.on(ClientEvent.sendChatLine, (text: string) => {
-            this.logChatLine(playerName, text);
+            this.logChatLine(playerName, ` says: "${text}"`);
         });
 
         let requestRunning = false;
@@ -193,15 +193,21 @@ export class GameServer {
 
     @bind
     private logNameChange(newPlayerName: string, oldPlayerName: string) {
-        this.logAction(newPlayerName, ` was previously known as "${oldPlayerName}".`)
-        this.logChatLine(newPlayerName, `I grew tired of my old name, "${oldPlayerName}".`);
+        const text = ` was previously known as "${oldPlayerName}".`;
+        this.logBoth(newPlayerName, text)
+    }
+
+    @bind
+    private logBoth(playerName: string, text: string) {
+        this.logAction(playerName, text);
+        this.logChatLine(playerName, text);
     }
 
     @bind
     private logChatLine(playerName: string, text: string) {
         const logLine: ILogLine = {
             playerName,
-            text: ` says: "${text}"`
+            text
         };
         this.lastChatLines.push(logLine);
         while (this.lastChatLines.length > 10) {

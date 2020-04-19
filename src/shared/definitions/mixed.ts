@@ -27,7 +27,7 @@ export const times = {
     [actions.Stoke100]: 1 / factor,
     [actions.TransportWood]: 10 / factor,
     [actions.ChopTree]: 20 / factor,
-    [actions.PlantTree]: 180 / factor,
+    [actions.PlantTree]: 120 / factor,
 };
 
 export function fireGrowthPerSecond(data: IData) {

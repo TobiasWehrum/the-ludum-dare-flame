@@ -26,7 +26,7 @@ export default class Records extends React.Component<IProps, IState> {
                 <ul>
                     <li>Fires started: {recordFiresStarted}</li>
                     <li>Longest fire burning: <TimeDisplay ms={Math.max(fireSize && burningTimeMS, recordFireTimeMS)} /></li>
-                    <li>Biggest fire: {Math.ceil(recordFireSize / 10) * 10}</li>
+                    <li>Biggest fire: {Math.ceil(recordFireSize * 10) / 10}</li>
                     <li>Most trees in forest: {recordTrees}</li>
                     <li>Most players online: {recordPlayersOnline}</li>
                 </ul>
