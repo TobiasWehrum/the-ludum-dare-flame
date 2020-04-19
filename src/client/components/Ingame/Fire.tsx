@@ -4,7 +4,7 @@ import { inject, observer } from "mobx-react";
 import ActionButton from "./ActionButton";
 import { actions, times, config, fireGrowthPerSecond, fireBurnPerSecond } from "../../../shared/definitions/mixed";
 import { TimeDisplay } from "./TimeDisplay";
-import { KeywordFire, KeywordFireC, KeywordWoodC, KeywordForest, KeywordTreeC, KeywordTree, KeywordWood } from "./Keywords";
+import { KeywordFire, KeywordFireC, KeywordWoodC, KeywordForest, KeywordTreesC, KeywordTree, KeywordWood } from "./Keywords";
 
 interface IProps {
     gameStateStore?: GameStateStore;
@@ -18,7 +18,7 @@ interface IState { }
 export default class Fire extends React.Component<IProps, IState> {
     public render() {
         const { data } = this.props.gameStateStore;
-        const { fireSize, woodInFire, fireStart, lastTick, trees, woodInForest, woodNearFire } = data;
+        const { fireSize, startedBy, woodInFire, fireStart, lastTick, trees, woodInForest, woodNearFire } = data;
         const { playerCount } = this.props.gameStateStore;
         const burningTimeMS = lastTick - fireStart;
         const growthPerSecond = fireGrowthPerSecond(data);
@@ -33,7 +33,7 @@ export default class Fire extends React.Component<IProps, IState> {
                 </div>)}
                 {fireSize > 0 && (
                     <div>
-                        <div>The <KeywordFire /> has been burning for <strong><TimeDisplay ms={burningTimeMS} /></strong>.</div>
+                        <div>The <KeywordFire /> started by {startedBy} has been burning for <strong><TimeDisplay ms={burningTimeMS} /></strong>.</div>
                     </div>
                 )}
                 <div>
@@ -57,7 +57,7 @@ export default class Fire extends React.Component<IProps, IState> {
                             <td>{woodInForest}</td>
                         </tr>
                         <tr>
-                            <tr><KeywordTreeC /> in <KeywordForest />:</tr>
+                            <tr><KeywordTreesC /> in <KeywordForest />:</tr>
                             <td>{trees}</td>
                         </tr>
                         <tr>
@@ -73,7 +73,7 @@ export default class Fire extends React.Component<IProps, IState> {
                 </div>
                 <div style={{ display: "flex" }}>
                     <ActionButton id={actions.TransportWood} disabled={woodInForest < TransportWoodCount} tooltipText={`-${TransportWoodCount} wood in forest, +${TransportWoodCount} wood near fire, ${times[actions.TransportWood]}s`}>Transport <KeywordWood /> near the <KeywordFire /></ActionButton>
-                    <ActionButton id={actions.ChopTree} disabled={trees === 0} tooltipText={`-1 tree, +${ChopTreeWoodResult} wood in forest, ${times[actions.ChopTree]}s`}>Chop down a <KeywordTree /></ActionButton>
+                    <ActionButton id={actions.ChopTree} disabled={trees === 0} tooltipText={`-1 tree, +${ChopTreeWoodResult} wood in forest, ${times[actions.ChopTree]}s`}>Chop down a <KeywordTree /> to get <KeywordWood /></ActionButton>
                     <ActionButton id={actions.PlantTree} tooltipText={`+1 tree, ${times[actions.PlantTree]}s`}>Plant a <KeywordTree /> and watch it grow</ActionButton>
                 </div>
                 <div>

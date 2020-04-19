@@ -35,6 +35,7 @@ export class GameServer {
         console.log("Client connected: " + socket.id + " (" + playerName + ")");
 
         this.playerCount++;
+        data.totalPlayers++;
 
         const initialDataPackage: IInitialDataPackage = {
             data,
@@ -48,8 +49,9 @@ export class GameServer {
 
         if (this.playerCount > data.recordPlayersOnline) {
             data.recordPlayersOnline = this.playerCount;
-            this.emitDataToAll();
         }
+
+        this.emitDataToAll();
 
         this.logBoth(playerName, ` wanders out of the darkness and sits near the fire.`);
 
@@ -92,6 +94,8 @@ export class GameServer {
                 return;
             }
 
+            data.totalActionsTaken++;
+
             this.emitDataToAll();
 
             this.queuedAction = actionId;
@@ -122,6 +126,7 @@ export class GameServer {
                         data.fireStart = Date.now();
                         data.fireSize = 1;
                         data.recordFiresStarted++;
+                        data.startedBy = playerName;
                         this.logAction(playerName, ` uses ${count} wood to start the fire.`);
                     } else {
                         this.logAction(playerName, ` puts ${count} wood into the fire.`);
@@ -282,10 +287,15 @@ export class GameServer {
 
         if (data.fireSize === 0) {
             const timeBurningMS = data.lastTick - data.fireStart;
-            data.recordFireTimeMS = Math.max(data.recordFireTimeMS, timeBurningMS);
             this.logSystemMessage("The fire has burned down.");
-        } else {
-            data.recordFireSize = Math.max(data.recordFireSize, data.fireSize);
+
+            if (timeBurningMS > data.recordFireTimeMS) {
+                data.recordFireTimeMS = timeBurningMS;
+                data.recordFireTimeMSBy = data.startedBy;
+            }
+        } else if (data.fireSize > data.recordFireSize) {
+            data.recordFireSize = data.fireSize;
+            data.recordFireSizeBy = data.startedBy;
         }
     }
 }

@@ -8,3 +8,4 @@ export const KeywordForest = () => <span className="keyword tree">forest</span>;
 export const KeywordForestC = () => <span className="keyword tree">Forest</span>;
 export const KeywordTree = () => <span className="keyword tree">tree</span>;
 export const KeywordTreeC = () => <span className="keyword tree">Tree</span>;
+export const KeywordTreesC = () => <span className="keyword tree">Trees</span>;

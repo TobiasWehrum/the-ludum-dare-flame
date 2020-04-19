@@ -34,7 +34,17 @@ export function fireGrowthPerSecond(data: IData) {
     if (data.fireSize === 0)
         return 0;
 
-    return (Math.pow(data.woodInFire, 0.5) - data.fireSize) / 50 - 0.1;
+    let changeRate = (Math.pow(data.woodInFire, 0.5) - data.fireSize) / 50;
+
+    if (data.fireSize <= 1) {
+        changeRate = Math.max(0, changeRate);
+    }
+
+    if (changeRate < 0) {
+        changeRate *= 10;
+    }
+
+    return changeRate;
 }
 
 export function fireBurnPerSecond(data: IData) {

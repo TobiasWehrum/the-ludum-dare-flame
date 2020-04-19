@@ -1,4 +1,5 @@
 export interface IData {
+    startedBy: string;
     fireSize: number;
     woodInFire: number;
     woodNearFire: number;
@@ -7,10 +8,14 @@ export interface IData {
     lastTick: number;
     fireStart: number;
     recordFireTimeMS: number;
+    recordFireTimeMSBy: string;
     recordFireSize: number;
+    recordFireSizeBy: string;
     recordTrees: number;
     recordFiresStarted: number;
     recordPlayersOnline: number;
+    totalPlayers: number;
+    totalActionsTaken: number;
 }
 
 export interface ILogLine {
@@ -21,6 +26,7 @@ export interface ILogLine {
 export function generateDefaultData(): IData {
     const startTrees = 10;
     const data: IData = {
+        startedBy: "",
         fireSize: 0,
         woodInFire: 10,
         woodNearFire: 10,
@@ -29,10 +35,14 @@ export function generateDefaultData(): IData {
         lastTick: Date.now(),
         fireStart: 0,
         recordFireSize: 0,
+        recordFireSizeBy: "",
         recordFireTimeMS: 0,
+        recordFireTimeMSBy: "",
         recordTrees: startTrees,
         recordFiresStarted: 0,
-        recordPlayersOnline: 0
+        recordPlayersOnline: 0,
+        totalPlayers: 0,
+        totalActionsTaken: 0
     };
 
     return data;

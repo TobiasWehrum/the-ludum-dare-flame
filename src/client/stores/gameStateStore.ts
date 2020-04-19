@@ -130,6 +130,7 @@ export class GameStateStore {
 }
 
 export class Data implements IData {
+    @observable public startedBy: string;
     @observable public fireSize: number;
     @observable public woodInFire: number;
     @observable public lastTick: number;
@@ -138,10 +139,14 @@ export class Data implements IData {
     @observable public woodInForest: number;
     @observable public trees: number;
     @observable public recordFireTimeMS: number;
+    @observable public recordFireTimeMSBy: string;
     @observable public recordFireSize: number;
+    @observable public recordFireSizeBy: string;
     @observable public recordTrees: number;
     @observable public recordFiresStarted: number;
     @observable public recordPlayersOnline: number;
+    @observable public totalPlayers: number;
+    @observable public totalActionsTaken: number;
 
     //@observable public playerStates: PlayerState[] = [];
     //public playerStatesFactory = () => new PlayerState();
