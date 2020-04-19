@@ -17,7 +17,10 @@ interface IState { }
 @observer
 export default class Fire extends React.Component<IProps, IState> {
     public render() {
-        const { fireSize, fireStart, lastTick, trees, woodInForest, woodNearFire } = this.props.gameStateStore.data;
+        const {
+            fireSize, fireStart, lastTick, trees, woodInForest, woodNearFire,
+            recordFireTimeMS, recordFireSize, recordTrees
+        } = this.props.gameStateStore.data;
         const burningTimeMS = lastTick - fireStart;
 
         const { FireStokeWoodCount, ChopTreeWoodResult, TransportWoodCount } = config;
@@ -44,6 +47,12 @@ export default class Fire extends React.Component<IProps, IState> {
                     <ActionButton id={actions.ChopTree} disabled={trees === 0} tooltipText={`-1 tree, +${ChopTreeWoodResult} wood in forest, ${times[actions.ChopTree]}s`}>Chop down a tree</ActionButton>
                     <ActionButton id={actions.PlantTree} tooltipText={`+1 tree, ${times[actions.PlantTree]}s`}>Plant a tree and watch it grow</ActionButton>
                 </div>
+                <h1>Records</h1>
+                <ul>
+                    <li>Longest fire burning: <TimeDisplay ms={Math.max(fireSize && burningTimeMS, recordFireTimeMS)} /></li>
+                    <li>Highest fire: {Math.ceil(recordFireSize)}</li>
+                    <li>Most trees in forest: {recordTrees}</li>
+                </ul>
             </div>
         );
     }

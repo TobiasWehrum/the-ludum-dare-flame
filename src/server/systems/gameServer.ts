@@ -105,6 +105,7 @@ export class GameServer {
                     data.fireStart = Date.now();
                 }
                 data.fireSize += config.FireStoke;
+                data.recordFireSize = Math.max(data.recordFireSize, data.fireSize);
                 break;
 
             case actions.TransportWood:
@@ -117,6 +118,7 @@ export class GameServer {
 
             case actions.PlantTree:
                 data.trees++;
+                data.recordTrees = Math.max(data.recordTrees, data.trees);
                 break;
         }
     }
@@ -140,6 +142,14 @@ export class GameServer {
     }
 
     private tick() {
+        if (data.fireSize === 0)
+            return;
+
         data.fireSize = Math.max(0, data.fireSize - TICK_S * config.FireShrinkPerSecond);
+
+        if (data.fireSize === 0) {
+            const timeBurningMS = data.lastTick - data.fireStart;
+            data.recordFireTimeMS = Math.max(data.recordFireTimeMS, timeBurningMS);
+        }
     }
 }

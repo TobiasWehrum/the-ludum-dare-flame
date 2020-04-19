@@ -120,6 +120,9 @@ class Data implements IData {
     @observable public woodNearFire: number;
     @observable public woodInForest: number;
     @observable public trees: number;
+    @observable public recordFireTimeMS: number;
+    @observable public recordFireSize: number;
+    @observable public recordTrees: number;
 
     //@observable public playerStates: PlayerState[] = [];
     //public playerStatesFactory = () => new PlayerState();
