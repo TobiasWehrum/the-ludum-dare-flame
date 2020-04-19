@@ -18,6 +18,9 @@ export class GameServer {
     private lastLogLines: ILogLine[] = [];
     private lastChatLines: ILogLine[] = [];
 
+    private queuedAction: string;
+    private queuedTimeout: NodeJS.Timeout;
+
     public start(server: Server) {
         this.io = socketio(server);
         this.io.on(EVENT_CONNECTION, this.onConnection);
@@ -55,6 +58,13 @@ export class GameServer {
             console.log("Client disconnected: " + socket.id + " (" + playerName + ")");
             this.playerCount--;
             this.io.emit(ServerEvent.updatePlayerCount, this.playerCount);
+
+            if (this.queuedTimeout) {
+                clearTimeout(this.queuedTimeout);
+                this.queuedTimeout = null;
+                this.actionCancel(playerName, this.queuedAction);
+            }
+
             this.logBoth(playerName, ` gets up and wanders into the darkness again.`);
         });
 
@@ -84,7 +94,10 @@ export class GameServer {
 
             this.emitDataToAll();
 
-            setTimeout(() => {
+            this.queuedAction = actionId;
+            this.queuedTimeout = setTimeout(() => {
+                this.queuedAction = null;
+                this.queuedTimeout = null;
                 this.actionExecute(playerName, actionId);
                 this.emitDataToAll();
                 requestRunning = false;
@@ -136,6 +149,32 @@ export class GameServer {
 
             case actions.PlantTree:
                 this.logAction(playerName, ` plants a new tree, and watches in amazement as it grows. Don't count on them in the next ${times[actions.PlantTree] / 60} minutes.`);
+                return true;
+        }
+
+        return false;
+    }
+
+    @bind
+    private actionCancel(playerName, actionId) {
+        switch (actionId) {
+            case actions.Stoke1:
+            case actions.Stoke10:
+            case actions.Stoke100:
+                break;
+
+            case actions.TransportWood:
+                this.logAction(playerName, ` puts back the ${config.TransportWoodCount} wood into the forest.`);
+                data.woodInForest += config.TransportWoodCount;
+                break;
+
+            case actions.ChopTree:
+                this.logAction(playerName, ` stops chopping down the tree.`);
+                data.trees++;
+                break;
+
+            case actions.PlantTree:
+                this.logAction(playerName, `'s tree shrivels and dies because they didn't watch it properly :(`);
                 return true;
         }
 
