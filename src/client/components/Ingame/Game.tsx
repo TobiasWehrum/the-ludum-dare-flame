@@ -82,7 +82,7 @@ export default class Game extends React.Component<IProps, IState> {
                 <div id="right-area" className="area">
                     <Log />
                 </div>
-                <Link className="statistics-link" to="/statistics">Statistics</Link>
+                {/*}<Link className="statistics-link" to="/statistics">Statistics</Link>{*/}
             </div>
         );
     }
