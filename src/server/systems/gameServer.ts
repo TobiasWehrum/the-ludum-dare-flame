@@ -152,7 +152,7 @@ export class GameServer {
 
             case actions.TransportWood:
                 this.logAction(playerName, ` puts down ${config.TransportWoodCount} wood next to the fire.`);
-                data.woodNearFire += config.TransportWoodCount * 10000;
+                data.woodNearFire += config.TransportWoodCount;
                 break;
 
             case actions.ChopTree:
