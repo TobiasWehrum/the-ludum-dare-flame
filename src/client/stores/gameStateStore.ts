@@ -24,6 +24,7 @@ export class GameStateStore {
     @observable public playerName = "";
 
     @observable public logLines: LogLine[] = [];
+    @observable public playerCount: number;
 
     @computed
     public get requestsAreRunning(): boolean {
@@ -88,8 +89,9 @@ export class GameStateStore {
 
     @action.bound
     public setInitialData(initialDataPackage: IInitialDataPackage) {
-        const { data, lastLogLines } = initialDataPackage;
+        const { data, lastLogLines, playerCount } = initialDataPackage;
         this.logLines = lastLogLines;
+        this.playerCount = playerCount;
         this.updateDataFrom(data);
         this.loaded = true;
     }
@@ -135,6 +137,7 @@ export class Data implements IData {
     @observable public recordFireTimeMS: number;
     @observable public recordFireSize: number;
     @observable public recordTrees: number;
+    @observable public recordPlayersOnline: number;
 
     //@observable public playerStates: PlayerState[] = [];
     //public playerStatesFactory = () => new PlayerState();

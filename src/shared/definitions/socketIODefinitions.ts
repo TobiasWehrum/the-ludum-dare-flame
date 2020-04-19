@@ -2,7 +2,8 @@ import { IData, ILogLine } from "./databaseInterfaces";
 
 export interface IInitialDataPackage {
     data: IData;
-    lastLogLines: ILogLine[]
+    lastLogLines: ILogLine[];
+    playerCount: number;
 }
 
 export const ClientEvent = {
@@ -14,5 +15,6 @@ export const ClientEvent = {
 export const ServerEvent = {
     initialDataPackage: "initialDataPackage",
     updateData: "updateData",
-    addLogLine: "addLogLine"
+    addLogLine: "addLogLine",
+    updatePlayerCount: "updatePlayerCount"
 };

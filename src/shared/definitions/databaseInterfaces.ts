@@ -8,6 +8,7 @@ export interface IData {
     recordFireTimeMS: number;
     recordFireSize: number;
     recordTrees: number;
+    recordPlayersOnline: number;
 }
 
 export interface ILogLine {
@@ -26,7 +27,8 @@ export function generateDefaultData(): IData {
         fireStart: 0,
         recordFireSize: 0,
         recordFireTimeMS: 0,
-        recordTrees: startTrees
+        recordTrees: startTrees,
+        recordPlayersOnline: 0
     };
 
     return data;

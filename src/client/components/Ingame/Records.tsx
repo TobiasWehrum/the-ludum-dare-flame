@@ -16,7 +16,7 @@ export default class Records extends React.Component<IProps, IState> {
     public render() {
         const {
             fireSize, fireStart, lastTick,
-            recordFireTimeMS, recordFireSize, recordTrees
+            recordFireTimeMS, recordFireSize, recordTrees, recordPlayersOnline
         } = this.props.gameStateStore.data;
         const burningTimeMS = lastTick - fireStart;
 
@@ -27,6 +27,7 @@ export default class Records extends React.Component<IProps, IState> {
                     <li>Longest fire burning: <TimeDisplay ms={Math.max(fireSize && burningTimeMS, recordFireTimeMS)} /></li>
                     <li>Highest fire: {Math.ceil(recordFireSize)}</li>
                     <li>Most trees in forest: {recordTrees}</li>
+                    <li>Most players online: {recordPlayersOnline}</li>
                 </ul>
             </div>
         );

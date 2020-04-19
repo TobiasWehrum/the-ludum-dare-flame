@@ -17,6 +17,7 @@ interface IState { }
 export default class Fire extends React.Component<IProps, IState> {
     public render() {
         const { fireSize, fireStart, lastTick, trees, woodInForest, woodNearFire } = this.props.gameStateStore.data;
+        const { playerCount } = this.props.gameStateStore;
         const burningTimeMS = lastTick - fireStart;
 
         const { FireStokeWoodCount, ChopTreeWoodResult, TransportWoodCount } = config;
@@ -36,6 +37,7 @@ export default class Fire extends React.Component<IProps, IState> {
                     <li>Wood near fire: {woodNearFire}</li>
                     <li>Wood in forest: {woodInForest}</li>
                     <li>Trees: {trees}</li>
+                    <li>Players enjoying the fire: {playerCount}</li>
                 </ul>
                 <div style={{ display: "inline-flex" }}>
                     <ActionButton id={actions.Stoke} disabled={woodNearFire < FireStokeWoodCount} tooltipText={`-${FireStokeWoodCount} wood near fire, ${times[actions.Stoke]}s`}>{fireSize === 0 ? "Light" : "Stoke"} the fire</ActionButton>

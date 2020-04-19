@@ -14,6 +14,7 @@ const TICK_S = 0.1;
 
 export class GameServer {
     private io: socketio.Server;
+    private playerCount: number = 0;
     private lastLogLines: ILogLine[] = [];
 
     public start(server: Server) {
@@ -29,18 +30,29 @@ export class GameServer {
 
         console.log("Client connected: " + socket.id + " (" + playerName + ")");
 
+        this.playerCount++;
+
         const initialDataPackage: IInitialDataPackage = {
             data,
-            lastLogLines: this.lastLogLines
+            lastLogLines: this.lastLogLines,
+            playerCount: this.playerCount
         };
 
         socket.emit(ServerEvent.initialDataPackage, initialDataPackage);
+        this.io.emit(ServerEvent.updatePlayerCount, this.playerCount);
+
+        if (this.playerCount > data.recordPlayersOnline) {
+            data.recordPlayersOnline = this.playerCount;
+            this.emitDataToAll();
+        }
 
         this.logAction(playerName, ` wanders out of the darkness and sits near the fire.`);
 
         // tslint:disable-next-line: no-empty
         socket.on(EVENT_DISCONNECT, () => {
             console.log("Client disconnected: " + socket.id + " (" + playerName + ")");
+            this.playerCount--;
+            this.io.emit(ServerEvent.updatePlayerCount, this.playerCount);
             this.logAction(playerName, ` gets up and wanders into the darkness again.`);
         });
 
@@ -164,6 +176,11 @@ export class GameServer {
     }
 
     @bind
+    private logSystemMessage(action: string) {
+        this.logAction("", action);
+    }
+
+    @bind
     private logNameChange(newPlayerName: string, oldPlayerName: string) {
         this.logAction(newPlayerName, ` was previously known as "${oldPlayerName}".`)
     }
@@ -195,6 +212,7 @@ export class GameServer {
         if (data.fireSize === 0) {
             const timeBurningMS = data.lastTick - data.fireStart;
             data.recordFireTimeMS = Math.max(data.recordFireTimeMS, timeBurningMS);
+            this.logSystemMessage("The fire has burned down.");
         }
     }
 }

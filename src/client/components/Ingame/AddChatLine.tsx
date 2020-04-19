@@ -37,8 +37,8 @@ export default class AddChatLine extends React.Component<IProps, IState> {
         return (
             <div>
                 <form onSubmit={this.submitChatLine}>
-                    Say:
-                <input onChange={this.onNameChange} value={this.state.text} />
+                    Say: &nbsp;
+                    <input onChange={this.onNameChange} value={this.state.text} />
                     <button type="submit">Send</button>
                 </form>
             </div>

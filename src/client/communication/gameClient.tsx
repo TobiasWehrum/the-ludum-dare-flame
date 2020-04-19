@@ -42,6 +42,10 @@ class GameClient {
             gameStateStore.updateDataFrom(data);
         });
 
+        this.socket.on(ServerEvent.updatePlayerCount, (playerCount: number) => {
+            gameStateStore.playerCount = playerCount;
+        });
+
         this.socket.on(ServerEvent.addLogLine, (logLine: ILogLine) => {
             gameStateStore.logLines.push(logLine);
         });
