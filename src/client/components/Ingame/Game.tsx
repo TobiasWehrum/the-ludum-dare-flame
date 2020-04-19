@@ -3,6 +3,9 @@ import { GameStateStore, ConnectionStatus } from "../../stores/gameStateStore";
 import { inject, observer } from "mobx-react";
 import gameClient from "../../communication/gameClient";
 import IngameButton from "./IngameButton";
+import ActionButton from "./ActionButton";
+import { actions } from "../../../shared/definitions/mixed";
+import Fire from "./Fire";
 
 interface IProps {
     gameStateStore?: GameStateStore;
@@ -50,12 +53,11 @@ export default class Game extends React.Component<IProps, IState> {
             return <div>Loading...</div>;
         }
 
-        const { data } = gameStateStore;
-        const { score } = data;
+        //const { data } = gameStateStore;
 
         return (
             <div>
-                <IngameButton onClick={gameClient.doButtonAction}>{score}</IngameButton>
+                <Fire />
             </div>
         );
     }

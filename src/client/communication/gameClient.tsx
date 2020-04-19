@@ -85,6 +85,7 @@ class GameClient {
     public doButtonAction(ingameButton: IngameButton) {
         const id = ingameButton.props.id;
         stores.gameStateStore.requestStarted();
+        stores.gameStateStore.startCooldown(id);
         this.socket.emit(ClientEvent.doAction, id, stores.gameStateStore.requestFinished);
     }
 

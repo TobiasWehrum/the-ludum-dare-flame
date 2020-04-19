@@ -1,6 +1,8 @@
 import { observable, action, computed } from "mobx";
 import { IInitialDataPackage } from "../../shared/definitions/socketIODefinitions";
 import { IData } from "../../shared/definitions/databaseInterfaces";
+import { times } from "../../shared/definitions/mixed";
+import { timeStore } from "./timeStore";
 
 export enum ConnectionStatus {
     Connecting,
@@ -12,6 +14,9 @@ export class GameStateStore {
     @observable public connectionStatus: ConnectionStatus;
     @observable public connectionErrors: string[] = [];
     @observable public runningRequests = 0;
+    @observable public cooldownId: string = null;
+    @observable public cooldownStart = 0;
+    @observable public cooldownTimeMS = 0;
 
     @observable public loaded = false;
     @observable public data = new Data();
@@ -23,8 +28,18 @@ export class GameStateStore {
 
     @computed
     public get isInterfaceLocked(): boolean {
-        //return this.requestsAreRunning;
-        return false;
+        return this.requestsAreRunning;
+        //return false;
+    }
+
+    @computed
+    public get cooldownProgress() {
+        if (this.cooldownTimeMS <= 0) {
+            return 0;
+        }
+
+        const timeElapsed = timeStore.time - this.cooldownStart;
+        return Math.min(1, Math.max(0, timeElapsed / this.cooldownTimeMS));
     }
 
     @action.bound
@@ -87,11 +102,24 @@ export class GameStateStore {
     @action.bound
     public requestFinished() {
         this.runningRequests--;
+        this.cooldownId = null;
+    }
+
+    @action.bound
+    public startCooldown(id: string) {
+        this.cooldownId = id;
+        this.cooldownStart = timeStore.time;
+        this.cooldownTimeMS = times[id] * 1000;
     }
 }
 
 class Data implements IData {
-    @observable public score: number;
+    @observable public fireSize: number;
+    @observable public lastTick: number;
+    @observable public fireStart: number;
+    @observable public woodNearFire: number;
+    @observable public woodInForest: number;
+    @observable public trees: number;
 
     //@observable public playerStates: PlayerState[] = [];
     //public playerStatesFactory = () => new PlayerState();
