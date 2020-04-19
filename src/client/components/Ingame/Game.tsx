@@ -10,6 +10,7 @@ import Records from "./Records";
 import NameChanger from "./NameChanger";
 import Log from "./Log";
 import AddChatLine from "./AddChatLine";
+import { Link } from "react-router-dom";
 
 interface IProps {
     gameStateStore?: GameStateStore;
@@ -81,6 +82,7 @@ export default class Game extends React.Component<IProps, IState> {
                 <div id="right-area" className="area">
                     <Log />
                 </div>
+                <Link className="statistics-link" to="/statistics">Statistics</Link>
             </div>
         );
     }
