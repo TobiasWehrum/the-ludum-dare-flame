@@ -10,6 +10,11 @@ export interface IData {
     recordTrees: number;
 }
 
+export interface ILogLine {
+    playerName: string;
+    text: string;
+}
+
 export function generateDefaultData(): IData {
     const startTrees = 100;
     const data: IData = {

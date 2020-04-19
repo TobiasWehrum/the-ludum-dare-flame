@@ -5,7 +5,7 @@ import { bind } from "bind-decorator";
 import { data } from "./db";
 import { config, times } from "../../shared/definitions/mixed";
 import { actions } from "../../shared/definitions/mixed";
-import { timeout } from '../../shared/utils/utils';
+import { ILogLine } from '../../shared/definitions/databaseInterfaces';
 
 const EVENT_CONNECTION = "connection";
 const EVENT_DISCONNECT = "disconnect";
@@ -14,6 +14,7 @@ const TICK_S = 0.1;
 
 export class GameServer {
     private io: socketio.Server;
+    private lastLogLines: ILogLine[] = [];
 
     public start(server: Server) {
         this.io = socketio(server);
@@ -29,17 +30,27 @@ export class GameServer {
         console.log("Client connected: " + socket.id + " (" + playerName + ")");
 
         const initialDataPackage: IInitialDataPackage = {
-            data
+            data,
+            lastLogLines: this.lastLogLines
         };
 
         socket.emit(ServerEvent.initialDataPackage, initialDataPackage);
+
+        this.logAction(playerName, ` wanders out of the darkness and sits near the fire.`);
+
         // tslint:disable-next-line: no-empty
         socket.on(EVENT_DISCONNECT, () => {
             console.log("Client disconnected: " + socket.id + " (" + playerName + ")");
+            this.logAction(playerName, ` gets up and wanders into the darkness again.`);
         });
 
         socket.on(ClientEvent.changeName, (newName: string) => {
+            this.logNameChange(newName, playerName);
             playerName = newName;
+        });
+
+        socket.on(ClientEvent.sendChatLine, (text: string) => {
+            this.logChatLine(playerName, text);
         });
 
         let requestRunning = false;
@@ -52,7 +63,7 @@ export class GameServer {
             }
 
             requestRunning = true;
-            if (!this.actionPre(actionId)) {
+            if (!this.actionPre(playerName, actionId)) {
                 callback();
                 return;
             }
@@ -60,7 +71,7 @@ export class GameServer {
             this.emitDataToAll();
 
             setTimeout(() => {
-                this.actionExecute(actionId);
+                this.actionExecute(playerName, actionId);
                 this.emitDataToAll();
                 requestRunning = false;
                 callback();
@@ -69,17 +80,26 @@ export class GameServer {
     }
 
     @bind
-    private actionPre(actionId) {
+    private actionPre(playerName, actionId) {
         switch (actionId) {
             case actions.Stoke:
                 if (data.woodNearFire >= config.FireStokeWoodCount) {
                     data.woodNearFire -= config.FireStokeWoodCount;
+                    if (data.fireSize === 0) {
+                        data.fireStart = Date.now();
+                        this.logAction(playerName, ` uses 1 wood to start the fire.`);
+                    } else {
+                        this.logAction(playerName, ` puts 1 wood into the fire.`);
+                    }
+                    data.fireSize += config.FireStoke;
+                    data.recordFireSize = Math.max(data.recordFireSize, data.fireSize);
                     return true;
                 }
                 return true;
 
             case actions.TransportWood:
                 if (data.woodInForest >= config.TransportWoodCount) {
+                    this.logAction(playerName, ` shoulders ${config.TransportWoodCount} wood from the forest.`);
                     data.woodInForest -= config.TransportWoodCount;
                     return true;
                 }
@@ -87,12 +107,14 @@ export class GameServer {
 
             case actions.ChopTree:
                 if (data.trees >= 1) {
+                    this.logAction(playerName, ` starts chopping down a tree.`);
                     data.trees -= 1;
                     return true;
                 }
                 break;
 
             case actions.PlantTree:
+                this.logAction(playerName, ` plants a new tree, and watches in amazement as it grows. Don't count on them in the next ${times[actions.PlantTree] / 60} minutes.`);
                 return true;
         }
 
@@ -100,25 +122,23 @@ export class GameServer {
     }
 
     @bind
-    private actionExecute(actionId) {
+    private actionExecute(playerName, actionId) {
         switch (actionId) {
             case actions.Stoke:
-                if (data.fireSize === 0) {
-                    data.fireStart = Date.now();
-                }
-                data.fireSize += config.FireStoke;
-                data.recordFireSize = Math.max(data.recordFireSize, data.fireSize);
                 break;
 
             case actions.TransportWood:
+                this.logAction(playerName, ` puts down ${config.TransportWoodCount} wood next to the fire.`);
                 data.woodNearFire += config.TransportWoodCount;
                 break;
 
             case actions.ChopTree:
+                this.logAction(playerName, ` chopped down the tree into small bits, leaving ${config.ChopTreeWoodResult} wood pieces in the forest.`);
                 data.woodInForest += config.ChopTreeWoodResult;
                 break;
 
             case actions.PlantTree:
+                this.logAction(playerName, `'s tree has fully grown.`);
                 data.trees++;
                 data.recordTrees = Math.max(data.recordTrees, data.trees);
                 break;
@@ -128,6 +148,29 @@ export class GameServer {
     @bind
     private emitDataToAll() {
         this.io.emit(ServerEvent.updateData, data);
+    }
+
+    @bind
+    private logAction(playerName: string, action: string) {
+        const logLine: ILogLine = {
+            playerName,
+            text: action
+        }
+        this.lastLogLines.push(logLine);
+        while (this.lastLogLines.length > 10) {
+            this.lastLogLines.shift();
+        }
+        this.io.emit(ServerEvent.addLogLine, logLine);
+    }
+
+    @bind
+    private logNameChange(newPlayerName: string, oldPlayerName: string) {
+        this.logAction(newPlayerName, ` was previously known as "${oldPlayerName}".`)
+    }
+
+    @bind
+    private logChatLine(playerName: string, text: string) {
+        this.logAction(playerName, ` says: "${text}"`)
     }
 
     @bind

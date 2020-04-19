@@ -1,10 +1,10 @@
 import io from "socket.io-client";
 import { stores } from "../stores";
-import { IData } from "../../shared/definitions/databaseInterfaces";
+import { IData, ILogLine } from "../../shared/definitions/databaseInterfaces";
 import { ClientEvent, ServerEvent, IInitialDataPackage } from "../../shared/definitions/socketIODefinitions";
 import IngameButton from "../components/Ingame/IngameButton";
 import { bind } from "bind-decorator";
-import { GameStateStore } from "../stores/gameStateStore";
+import { GameStateStore, LogLine } from "../stores/gameStateStore";
 
 const EVENT_CONNECT = "connect";
 const EVENT_DISCONNECT = "disconnect";
@@ -40,6 +40,10 @@ class GameClient {
 
         this.socket.on(ServerEvent.updateData, (data: IData) => {
             gameStateStore.updateDataFrom(data);
+        });
+
+        this.socket.on(ServerEvent.addLogLine, (logLine: ILogLine) => {
+            gameStateStore.logLines.push(logLine);
         });
 
         this.socket.on(EVENT_CONNECT, () => {
@@ -100,6 +104,11 @@ class GameClient {
         this.socket.emit(ClientEvent.changeName, playerName);
         stores.gameStateStore.playerName = playerName;
         (this.socket.io.opts.query as any).playerName = playerName;
+    }
+
+    @bind
+    public sendChatLine(text: string) {
+        this.socket.emit(ClientEvent.sendChatLine, text);
     }
 
     public disconnect() {

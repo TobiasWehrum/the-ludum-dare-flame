@@ -100,6 +100,25 @@ div#root {
     .error {
         color: $error-color;
     }
+
+    #main-area {
+        display: flex;
+    }
+
+    .area {
+        margin: 20px;
+        padding: 20px;
+        border: 1px dashed black;
+    }
+
+    #log {
+        overflow-y: scroll;
+        height: 70vh;
+    }
+
+    #insideLog {
+        margin-right: 20px;
+    }
 }
 
 .tooltip-container {

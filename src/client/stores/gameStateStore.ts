@@ -1,6 +1,6 @@
 import { observable, action, computed } from "mobx";
 import { IInitialDataPackage } from "../../shared/definitions/socketIODefinitions";
-import { IData } from "../../shared/definitions/databaseInterfaces";
+import { IData, ILogLine } from "../../shared/definitions/databaseInterfaces";
 import { times } from "../../shared/definitions/mixed";
 import { timeStore } from "./timeStore";
 import { randanimalSync } from "randanimal";
@@ -22,6 +22,8 @@ export class GameStateStore {
     @observable public loaded = false;
     @observable public data = new Data();
     @observable public playerName = "";
+
+    @observable public logLines: LogLine[] = [];
 
     @computed
     public get requestsAreRunning(): boolean {
@@ -86,7 +88,8 @@ export class GameStateStore {
 
     @action.bound
     public setInitialData(initialDataPackage: IInitialDataPackage) {
-        const { data } = initialDataPackage;
+        const { data, lastLogLines } = initialDataPackage;
+        this.logLines = lastLogLines;
         this.updateDataFrom(data);
         this.loaded = true;
     }
@@ -122,7 +125,7 @@ export class GameStateStore {
     }
 }
 
-class Data implements IData {
+export class Data implements IData {
     @observable public fireSize: number;
     @observable public lastTick: number;
     @observable public fireStart: number;
@@ -135,6 +138,11 @@ class Data implements IData {
 
     //@observable public playerStates: PlayerState[] = [];
     //public playerStatesFactory = () => new PlayerState();
+}
+
+export class LogLine implements ILogLine {
+    @observable public playerName: string;
+    @observable public text: string;
 }
 
 interface IReceiveCopy {
