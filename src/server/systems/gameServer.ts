@@ -5,7 +5,7 @@ import { bind } from "bind-decorator";
 import { data } from "./db";
 import { config, times, fireGrowthPerSecond, fireBurnPerSecond } from "../../shared/definitions/mixed";
 import { actions } from "../../shared/definitions/mixed";
-import { ILogLine } from '../../shared/definitions/databaseInterfaces';
+import { ILogLine } from "../../shared/definitions/databaseInterfaces";
 
 const EVENT_CONNECTION = "connection";
 const EVENT_DISCONNECT = "disconnect";
