@@ -99,6 +99,7 @@ export class GameServer {
                     data.woodNearFire -= config.FireStokeWoodCount;
                     if (data.fireSize === 0) {
                         data.fireStart = Date.now();
+                        data.recordFiresStarted++;
                         this.logAction(playerName, ` uses 1 wood to start the fire.`);
                     } else {
                         this.logAction(playerName, ` puts 1 wood into the fire.`);

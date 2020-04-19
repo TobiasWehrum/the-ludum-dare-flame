@@ -8,6 +8,7 @@ export interface IData {
     recordFireTimeMS: number;
     recordFireSize: number;
     recordTrees: number;
+    recordFiresStarted: number;
     recordPlayersOnline: number;
 }
 
@@ -28,6 +29,7 @@ export function generateDefaultData(): IData {
         recordFireSize: 0,
         recordFireTimeMS: 0,
         recordTrees: startTrees,
+        recordFiresStarted: 0,
         recordPlayersOnline: 0
     };
 

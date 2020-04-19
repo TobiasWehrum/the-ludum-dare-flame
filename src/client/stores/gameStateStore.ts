@@ -137,6 +137,7 @@ export class Data implements IData {
     @observable public recordFireTimeMS: number;
     @observable public recordFireSize: number;
     @observable public recordTrees: number;
+    @observable public recordFiresStarted: number;
     @observable public recordPlayersOnline: number;
 
     //@observable public playerStates: PlayerState[] = [];
