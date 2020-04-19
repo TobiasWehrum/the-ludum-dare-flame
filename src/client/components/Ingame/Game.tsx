@@ -66,7 +66,7 @@ export default class Game extends React.Component<IProps, IState> {
                 <Fire />
                 <div>
                     Name:&nbsp;
-                    {!changeName && <span>{playerName}<button onClick={() => this.setState({ changeName: true })}>Change</button></span>}
+                    {!changeName && <span>{playerName} <button onClick={() => this.setState({ changeName: true })}>Change</button></span>}
                     {changeName && <NameChanger currentName={playerName}
                         changeName={(newName: string) => {
                             gameClient.changeName(newName);

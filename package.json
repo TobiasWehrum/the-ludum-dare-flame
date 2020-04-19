@@ -83,6 +83,7 @@
         "express": "^4.17.1",
         "mongodb": "^3.2.7",
         "project-name-generator": "^2.1.7",
+        "randanimal": "^1.0.4",
         "socket.io": "^2.2.0",
         "tslib": "^1.10.0",
         "uuid": "^3.3.2"

@@ -3,7 +3,7 @@ import { IInitialDataPackage } from "../../shared/definitions/socketIODefinition
 import { IData } from "../../shared/definitions/databaseInterfaces";
 import { times } from "../../shared/definitions/mixed";
 import { timeStore } from "./timeStore";
-import * as generate from "project-name-generator";
+import { randanimalSync } from "randanimal";
 
 export enum ConnectionStatus {
     Connecting,
@@ -81,6 +81,7 @@ export class GameStateStore {
     public setNotLoaded() {
         this.loaded = false;
         this.runningRequests = 0;
+        this.cooldownId = null;
     }
 
     @action.bound
@@ -116,7 +117,8 @@ export class GameStateStore {
 
     @action.bound
     public generatePlayerName() {
-        this.playerName = generate().raw.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+        //this.playerName = generate().raw.map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(" ");
+        this.playerName = randanimalSync();
     }
 }
 
