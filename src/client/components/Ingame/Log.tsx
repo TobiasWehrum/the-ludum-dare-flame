@@ -17,14 +17,22 @@ interface IState { }
 @observer
 export default class Log extends React.Component<IProps, IState> {
     public render() {
-        const { logLines } = this.props.gameStateStore;
+        const { logLines, chatLines } = this.props.gameStateStore;
 
         return (
             <div>
                 <h1>Log</h1>
-                <div id="log">
-                    <div id="insideLog">
+                <div className="log">
+                    <div className="insideLog">
                         {mapReverse(logLines, (line: LogLine, index: number) => (
+                            <div key={index}><strong>{line.playerName}</strong>{line.text}</div>
+                        ))}
+                    </div>
+                </div>
+                <h1>Chat</h1>
+                <div className="log">
+                    <div className="insideLog">
+                        {mapReverse(chatLines, (line: LogLine, index: number) => (
                             <div key={index}><strong>{line.playerName}</strong>{line.text}</div>
                         ))}
                     </div>

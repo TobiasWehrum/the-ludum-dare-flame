@@ -50,6 +50,10 @@ class GameClient {
             gameStateStore.logLines.push(logLine);
         });
 
+        this.socket.on(ServerEvent.addChatLine, (logLine: ILogLine) => {
+            gameStateStore.chatLines.push(logLine);
+        });
+
         this.socket.on(EVENT_CONNECT, () => {
             console.log("Client connected. My socket ID is: " + this.socket.id);
             gameStateStore.setConnectionStatusConnected();

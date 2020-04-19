@@ -16,6 +16,7 @@ export class GameServer {
     private io: socketio.Server;
     private playerCount: number = 0;
     private lastLogLines: ILogLine[] = [];
+    private lastChatLines: ILogLine[] = [];
 
     public start(server: Server) {
         this.io = socketio(server);
@@ -35,6 +36,7 @@ export class GameServer {
         const initialDataPackage: IInitialDataPackage = {
             data,
             lastLogLines: this.lastLogLines,
+            lastChatLines: this.lastChatLines,
             playerCount: this.playerCount
         };
 
@@ -168,7 +170,7 @@ export class GameServer {
         const logLine: ILogLine = {
             playerName,
             text: action
-        }
+        };
         this.lastLogLines.push(logLine);
         while (this.lastLogLines.length > 10) {
             this.lastLogLines.shift();
@@ -184,11 +186,20 @@ export class GameServer {
     @bind
     private logNameChange(newPlayerName: string, oldPlayerName: string) {
         this.logAction(newPlayerName, ` was previously known as "${oldPlayerName}".`)
+        this.logChatLine(newPlayerName, `I grew tired of my old name, "${oldPlayerName}".`);
     }
 
     @bind
     private logChatLine(playerName: string, text: string) {
-        this.logAction(playerName, ` says: "${text}"`)
+        const logLine: ILogLine = {
+            playerName,
+            text: ` says: "${text}"`
+        };
+        this.lastChatLines.push(logLine);
+        while (this.lastChatLines.length > 10) {
+            this.lastChatLines.shift();
+        }
+        this.io.emit(ServerEvent.addChatLine, logLine);
     }
 
     @bind

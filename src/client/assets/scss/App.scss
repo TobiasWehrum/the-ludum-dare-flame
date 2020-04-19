@@ -101,8 +101,10 @@ div#root {
         color: $error-color;
     }
 
-    #main-area {
-        display: flex;
+    @media (min-width: 800px) {
+        #main-area {
+            display: flex;
+        }
     }
 
     .area {
@@ -111,12 +113,18 @@ div#root {
         border: 1px dashed black;
     }
 
-    #log {
+    .log {
         overflow-y: scroll;
-        height: 70vh;
+        height: 30vh;
     }
 
-    #insideLog {
+    @media (max-height: 700px) {
+        .log {
+            height: 200px;
+        }
+    }
+
+    .insideLog {
         margin-right: 20px;
     }
 }

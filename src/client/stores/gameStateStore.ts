@@ -24,6 +24,7 @@ export class GameStateStore {
     @observable public playerName = "";
 
     @observable public logLines: LogLine[] = [];
+    @observable public chatLines: LogLine[] = [];
     @observable public playerCount: number;
 
     @computed
@@ -89,8 +90,9 @@ export class GameStateStore {
 
     @action.bound
     public setInitialData(initialDataPackage: IInitialDataPackage) {
-        const { data, lastLogLines, playerCount } = initialDataPackage;
+        const { data, lastLogLines, lastChatLines, playerCount } = initialDataPackage;
         this.logLines = lastLogLines;
+        this.chatLines = lastChatLines;
         this.playerCount = playerCount;
         this.updateDataFrom(data);
         this.loaded = true;
