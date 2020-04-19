@@ -1,10 +1,8 @@
 import * as React from "react";
 import { GameStateStore, LogLine } from "../../stores/gameStateStore";
 import { inject, observer } from "mobx-react";
-import ActionButton from "./ActionButton";
-import { actions, times, config } from "../../../shared/definitions/mixed";
-import { TimeDisplay } from "./TimeDisplay";
 import { mapReverse } from "../../../shared/utils/utils";
+import AddChatLine from "./AddChatLine";
 
 interface IProps {
     gameStateStore?: GameStateStore;
@@ -30,6 +28,7 @@ export default class Log extends React.Component<IProps, IState> {
                     </div>
                 </div>
                 <h1>Chat</h1>
+                <AddChatLine />
                 <div className="log">
                     <div className="insideLog">
                         {mapReverse(chatLines, (line: LogLine, index: number) => (

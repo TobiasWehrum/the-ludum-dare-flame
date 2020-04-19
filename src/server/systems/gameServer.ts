@@ -3,7 +3,7 @@ import { ServerEvent, ClientEvent, IInitialDataPackage } from "../../shared/defi
 import { Server } from "http";
 import { bind } from "bind-decorator";
 import { data } from "./db";
-import { config, times } from "../../shared/definitions/mixed";
+import { config, times, fireGrowthPerSecond, fireBurnPerSecond } from "../../shared/definitions/mixed";
 import { actions } from "../../shared/definitions/mixed";
 import { ILogLine } from '../../shared/definitions/databaseInterfaces';
 
@@ -96,18 +96,24 @@ export class GameServer {
     @bind
     private actionPre(playerName, actionId) {
         switch (actionId) {
-            case actions.Stoke:
-                if (data.woodNearFire >= config.FireStokeWoodCount) {
-                    data.woodNearFire -= config.FireStokeWoodCount;
+            case actions.Stoke1:
+            case actions.Stoke10:
+            case actions.Stoke100:
+                const count =
+                    (actionId === actions.Stoke1) ? config.FireStoke1WoodCount :
+                        (actionId === actions.Stoke10) ? config.FireStoke10WoodCount :
+                            config.FireStoke100WoodCount;
+                if (data.woodNearFire >= count) {
+                    data.woodNearFire -= count;
                     if (data.fireSize === 0) {
                         data.fireStart = Date.now();
+                        data.fireSize = 1;
                         data.recordFiresStarted++;
-                        this.logAction(playerName, ` uses 1 wood to start the fire.`);
+                        this.logAction(playerName, ` uses ${count} wood to start the fire.`);
                     } else {
-                        this.logAction(playerName, ` puts 1 wood into the fire.`);
+                        this.logAction(playerName, ` puts ${count} wood into the fire.`);
                     }
-                    data.fireSize += config.FireStoke;
-                    data.recordFireSize = Math.max(data.recordFireSize, data.fireSize);
+                    data.woodInFire += count;
                     return true;
                 }
                 return true;
@@ -139,12 +145,14 @@ export class GameServer {
     @bind
     private actionExecute(playerName, actionId) {
         switch (actionId) {
-            case actions.Stoke:
+            case actions.Stoke1:
+            case actions.Stoke10:
+            case actions.Stoke100:
                 break;
 
             case actions.TransportWood:
                 this.logAction(playerName, ` puts down ${config.TransportWoodCount} wood next to the fire.`);
-                data.woodNearFire += config.TransportWoodCount;
+                data.woodNearFire += config.TransportWoodCount * 10000;
                 break;
 
             case actions.ChopTree:
@@ -219,12 +227,20 @@ export class GameServer {
         if (data.fireSize === 0)
             return;
 
-        data.fireSize = Math.max(0, data.fireSize - TICK_S * config.FireShrinkPerSecond);
+        //data.fireSize = Math.max(0, data.fireSize - TICK_S * config.FireShrinkPerSecond);
+        data.fireSize = Math.max(0, data.fireSize + fireGrowthPerSecond(data) * TICK_S);
+        data.woodInFire = Math.max(0, data.woodInFire - fireBurnPerSecond(data) * TICK_S);
+
+        if (data.woodInFire === 0) {
+            data.fireSize = 0;
+        }
 
         if (data.fireSize === 0) {
             const timeBurningMS = data.lastTick - data.fireStart;
             data.recordFireTimeMS = Math.max(data.recordFireTimeMS, timeBurningMS);
             this.logSystemMessage("The fire has burned down.");
+        } else {
+            data.recordFireSize = Math.max(data.recordFireSize, data.fireSize);
         }
     }
 }

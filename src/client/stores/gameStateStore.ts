@@ -131,6 +131,7 @@ export class GameStateStore {
 
 export class Data implements IData {
     @observable public fireSize: number;
+    @observable public woodInFire: number;
     @observable public lastTick: number;
     @observable public fireStart: number;
     @observable public woodNearFire: number;

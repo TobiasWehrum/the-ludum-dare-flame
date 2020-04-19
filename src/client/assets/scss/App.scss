@@ -34,6 +34,22 @@ div#root {
     padding: 0;
 }
 
+.keyword {
+    font-weight: bold;
+}
+
+.fire {
+    color: #fc6400;
+}
+
+.wood {
+    color: #5d432c;
+}
+
+.tree {
+    color: forestgreen;
+}
+
 .app {
     padding: 0;
     margin: 2em;
@@ -47,7 +63,7 @@ div#root {
     }
 
     .ingame-button {
-        width: 75px;
+        width: 100px;
         height: 75px;
     }
 
@@ -116,6 +132,7 @@ div#root {
     .log {
         overflow-y: scroll;
         height: 30vh;
+        background: #efefef;
     }
 
     @media (max-height: 700px) {
@@ -125,7 +142,11 @@ div#root {
     }
 
     .insideLog {
-        margin-right: 20px;
+        margin: 0px 20px;
+    }
+
+    td {
+        min-width: 50px;
     }
 }
 

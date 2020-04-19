@@ -13,7 +13,7 @@ class App extends React.Component<IProps, undefined> {
     public render() {
         return (
             <div className="app">
-                <h1>The Ludum Dare Flame</h1>
+                <h1 className="fire">The Ludum Dare Flame 🔥</h1>
                 <Game />
             </div>
         );

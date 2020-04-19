@@ -1,5 +1,6 @@
 export interface IData {
     fireSize: number;
+    woodInFire: number;
     woodNearFire: number;
     woodInForest: number;
     trees: number;
@@ -21,6 +22,7 @@ export function generateDefaultData(): IData {
     const startTrees = 100;
     const data: IData = {
         fireSize: 0,
+        woodInFire: 10,
         woodNearFire: 10,
         woodInForest: 100,
         trees: startTrees,

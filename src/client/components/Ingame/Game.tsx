@@ -76,7 +76,6 @@ export default class Game extends React.Component<IProps, IState> {
                                 this.setState({ changeName: false });
                             }} />}
                     </div>
-                    <AddChatLine />
                     <Records />
                 </div>
                 <div id="right-area" className="area">
