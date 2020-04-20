@@ -33,7 +33,7 @@ export default class NameChanger extends React.Component<IProps, IState> {
     public render() {
         return (
             <form style={{ display: "inline" }} onSubmit={this.submitName}>
-                <input onChange={this.onNameChange} value={this.state.name} />
+                <input onChange={this.onNameChange} value={this.state.name} maxLength={20} />
                 <button type="submit">Change!</button>
             </form>
         );
