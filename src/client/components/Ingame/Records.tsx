@@ -30,8 +30,8 @@ export default class Records extends React.Component<IProps, IState> {
                     <li>Biggest fire: {Math.ceil(recordFireSize * 10) / 10} (started by {recordFireSizeBy})</li>
                     <li>Most trees in forest: {recordTrees}</li>
                     <li>Most players online at the same time: {recordPlayersOnline}</li>
-                    <li>Total player counter: {totalPlayers}</li>
-                    <li>Total action counter: {totalActionsTaken}</li>
+                    <li>Total players: {totalPlayers}</li>
+                    <li>Total actions: {totalActionsTaken}</li>
                 </ul>
             </div>
         );
