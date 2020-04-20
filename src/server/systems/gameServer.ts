@@ -6,6 +6,7 @@ import { data } from "./db";
 import { config, times, fireGrowthPerSecond, fireBurnPerSecond } from "../../shared/definitions/mixed";
 import { actions } from "../../shared/definitions/mixed";
 import { ILogLine } from "../../shared/definitions/databaseInterfaces";
+import { msToTimeString } from '../../shared/utils/utils';
 
 const EVENT_CONNECTION = "connection";
 const EVENT_DISCONNECT = "disconnect";
@@ -53,7 +54,7 @@ export class GameServer {
 
         this.emitDataToAll();
 
-        this.logBoth(playerName, ` wanders out of the darkness and sits near the fire.`);
+        this.logBoth(playerName, ` appears out of the darkness and sits near the fire.`);
 
         // tslint:disable-next-line: no-empty
         socket.on(EVENT_DISCONNECT, () => {
@@ -71,6 +72,9 @@ export class GameServer {
         });
 
         socket.on(ClientEvent.changeName, (newName: string) => {
+            if (newName.length > 20) {
+                newName = newName.slice(0, 20);
+            }
             this.logNameChange(newName, playerName);
             playerName = newName;
         });
@@ -287,7 +291,7 @@ export class GameServer {
 
         if (data.fireSize === 0) {
             const timeBurningMS = data.lastTick - data.fireStart;
-            this.logSystemMessage("The fire has burned down.");
+            this.logSystemMessage(`The fire started by ${data.startedBy} has burned down after ${msToTimeString(timeBurningMS)}.`);
 
             if (timeBurningMS > data.recordFireTimeMS) {
                 data.recordFireTimeMS = timeBurningMS;
