@@ -50,3 +50,21 @@ export function fireGrowthPerSecond(data: IData) {
 export function fireBurnPerSecond(data: IData) {
     return data.fireSize * 0.1;
 }
+
+export function getFireSizeDescriptor(fireSize: number) {
+    if (fireSize > 12) {
+        return "The fire is so big it can be seen for miles.";
+    } else if (fireSize > 9) {
+        return "The fire is gigantic.";
+    } else if (fireSize > 6) {
+        return "The fire is blazing.";
+    } else if (fireSize > 4) {
+        return "The fire is burning brightly.";
+    } else if (fireSize > 2) {
+        return "The fire is flickering merrily";
+    } else if (fireSize > 0) {
+        return "The fire is tiny.";
+    }
+
+    return "";
+}

@@ -3,7 +3,7 @@ import { ServerEvent, ClientEvent, IInitialDataPackage } from "../../shared/defi
 import { Server } from "http";
 import { bind } from "bind-decorator";
 import { data } from "./db";
-import { config, times, fireGrowthPerSecond, fireBurnPerSecond } from "../../shared/definitions/mixed";
+import { config, times, fireGrowthPerSecond, fireBurnPerSecond, getFireSizeDescriptor } from "../../shared/definitions/mixed";
 import { actions } from "../../shared/definitions/mixed";
 import { ILogLine } from "../../shared/definitions/databaseInterfaces";
 import { msToTimeString } from '../../shared/utils/utils';
@@ -18,6 +18,7 @@ export class GameServer {
     private playerCount: number = 0;
     private lastLogLines: ILogLine[] = [];
     private lastChatLines: ILogLine[] = [];
+    private fireSizeDescriptor: string;
 
     private queuedAction: string;
     private queuedTimeout: NodeJS.Timeout;
@@ -281,9 +282,19 @@ export class GameServer {
         if (data.fireSize === 0)
             return;
 
+        const woodInFireBefore = data.woodInFire;
+
         //data.fireSize = Math.max(0, data.fireSize - TICK_S * config.FireShrinkPerSecond);
         data.fireSize = Math.max(0, data.fireSize + fireGrowthPerSecond(data) * TICK_S);
         data.woodInFire = Math.max(0, data.woodInFire - fireBurnPerSecond(data) * TICK_S);
+
+        const newFireSizeDescriptor = getFireSizeDescriptor(data.fireSize);
+        if (newFireSizeDescriptor !== this.fireSizeDescriptor) {
+            this.fireSizeDescriptor = newFireSizeDescriptor;
+            if (newFireSizeDescriptor) {
+                this.logSystemMessage(newFireSizeDescriptor);
+            }
+        }
 
         if (data.woodInFire === 0) {
             data.fireSize = 0;
@@ -300,6 +311,10 @@ export class GameServer {
         } else if (data.fireSize > data.recordFireSize) {
             data.recordFireSize = data.fireSize;
             data.recordFireSizeBy = data.startedBy;
+        }
+
+        if ((data.fireSize > 0) && (data.woodInFire < 2) && (woodInFireBefore >= 2)) {
+            this.logSystemMessage(`The fire is running out of wood.`);
         }
     }
 }
