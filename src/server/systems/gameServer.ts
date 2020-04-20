@@ -20,9 +20,6 @@ export class GameServer {
     private lastChatLines: ILogLine[] = [];
     private fireSizeDescriptor: string;
 
-    private queuedAction: string;
-    private queuedTimeout: NodeJS.Timeout;
-
     public start(server: Server) {
         this.io = socketio(server);
         this.io.on(EVENT_CONNECTION, this.onConnection);
@@ -32,6 +29,9 @@ export class GameServer {
 
     @bind
     private async onConnection(socket: socketio.Socket) {
+        let queuedAction: string = "";
+        let queuedTimeout: NodeJS.Timeout = null;
+
         let playerName = socket.handshake.query.playerName;
 
         console.log("Client connected: " + socket.id + " (" + playerName + ")");
@@ -63,10 +63,10 @@ export class GameServer {
             this.playerCount--;
             this.io.emit(ServerEvent.updatePlayerCount, this.playerCount);
 
-            if (this.queuedTimeout) {
-                clearTimeout(this.queuedTimeout);
-                this.queuedTimeout = null;
-                this.actionCancel(playerName, this.queuedAction);
+            if (queuedTimeout) {
+                clearTimeout(queuedTimeout);
+                queuedTimeout = null;
+                this.actionCancel(playerName, queuedAction);
             }
 
             this.logBoth(playerName, ` gets up and wanders into the darkness again.`);
@@ -103,10 +103,10 @@ export class GameServer {
 
             this.emitDataToAll();
 
-            this.queuedAction = actionId;
-            this.queuedTimeout = setTimeout(() => {
-                this.queuedAction = null;
-                this.queuedTimeout = null;
+            queuedAction = actionId;
+            queuedTimeout = setTimeout(() => {
+                queuedAction = null;
+                queuedTimeout = null;
                 this.actionExecute(playerName, actionId);
                 this.emitDataToAll();
                 requestRunning = false;
