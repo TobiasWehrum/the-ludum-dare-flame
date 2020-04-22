@@ -19,6 +19,7 @@ export class GameServer {
     private lastLogLines: ILogLine[] = [];
     private lastChatLines: ILogLine[] = [];
     private fireSizeDescriptor: string;
+    private connectionsByAddress: Map<string, socketio.Socket> = new Map<string, socketio.Socket>();
 
     public start(server: Server) {
         this.io = socketio(server);
@@ -29,6 +30,13 @@ export class GameServer {
 
     @bind
     private async onConnection(socket: socketio.Socket) {
+        const { address } = socket.handshake;
+        const previousConnection = this.connectionsByAddress.get(address);
+        if (previousConnection) {
+            previousConnection.disconnect();
+        }
+        this.connectionsByAddress.set(address, socket);
+
         let queuedAction: string = "";
         let queuedTimeout: NodeJS.Timeout = null;
 
