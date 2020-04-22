@@ -30,7 +30,7 @@ export class GameServer {
 
     @bind
     private async onConnection(socket: socketio.Socket) {
-        const { address } = socket.handshake;
+        const address = socket.request.connection.remoteAddress;
         const previousConnection = this.connectionsByAddress.get(address);
         if (previousConnection) {
             socket.disconnect();
