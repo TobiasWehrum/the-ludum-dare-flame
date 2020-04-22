@@ -44,7 +44,7 @@ export class GameServer {
 
         let playerName = socket.handshake.query.playerName;
 
-        console.log("Client connected: " + socket.id + " (" + playerName + ")");
+        console.log("Client connected: " + socket.id + " (" + playerName + "), address: " + address);
 
         this.playerCount++;
         data.totalPlayers++;
