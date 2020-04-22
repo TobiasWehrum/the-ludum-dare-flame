@@ -33,8 +33,10 @@ export class GameServer {
         const { address } = socket.handshake;
         const previousConnection = this.connectionsByAddress.get(address);
         if (previousConnection) {
-            previousConnection.disconnect();
+            socket.disconnect();
+            return;
         }
+
         this.connectionsByAddress.set(address, socket);
 
         let queuedAction: string = "";
@@ -67,6 +69,8 @@ export class GameServer {
 
         // tslint:disable-next-line: no-empty
         socket.on(EVENT_DISCONNECT, () => {
+            this.connectionsByAddress.delete(address);
+
             console.log("Client disconnected: " + socket.id + " (" + playerName + ")");
             this.playerCount--;
             this.io.emit(ServerEvent.updatePlayerCount, this.playerCount);
