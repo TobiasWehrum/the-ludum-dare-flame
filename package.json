@@ -109,7 +109,7 @@
         "@types/react-router-dom": "^4.3.4",
         "@types/socket.io": "^2.1.2",
         "@types/socket.io-client": "^1.4.32",
-        "axios": "^0.18.1",
+        "axios": "^0.21.1",
         "babel-loader": "^8.0.6",
         "caniuse-lite": "^1.0.30000974",
         "concurrently": "^4.1.0",
